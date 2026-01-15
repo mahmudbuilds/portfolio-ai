@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+/* ============================
+   THEME TOKENS
+   ============================ */
+:root {
+  --background: #050505;
+  --foreground: #ededed;
+  --accent-violet: #8b5cf6;
+  --accent-indigo: #6366f1;
+  --accent-purple: #a855f7;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ============================
+   BASE STYLES
+   ============================ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans, "Inter", system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ============================
+   TYPOGRAPHY
+   ============================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display, "Geist", system-ui, sans-serif);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* ============================
+   GLASSMORPHISM UTILITIES
+   ============================ */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================
+   GRADIENT TEXT
+   ============================ */
+.gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================
+   GLOW EFFECTS
+   ============================ */
+.glow-violet {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.2),
+    0 0 60px rgba(139, 92, 246, 0.1);
+}
+
+.glow-indigo {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 40px rgba(99, 102, 241, 0.2),
+    0 0 60px rgba(99, 102, 241, 0.1);
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.5),
+    0 0 40px rgba(139, 92, 246, 0.3);
+}
+
+/* ============================
+   ANIMATED GRADIENT BORDER
+   ============================ */
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    45deg,
+    var(--accent-violet),
+    var(--accent-indigo),
+    var(--accent-purple),
+    var(--accent-violet)
+  );
+  background-size: 400% 400%;
+  border-radius: inherit;
+  z-index: -1;
+  animation: gradient-shift 8s ease infinite;
+  opacity: 0.5;
+  filter: blur(10px);
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ============================
+   STAGGERED FADE-IN
+   ============================ */
+.stagger-fade > * {
+  opacity: 0;
+  animation: stagger-in 0.6s ease forwards;
+}
+
+.stagger-fade > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.stagger-fade > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.stagger-fade > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.stagger-fade > *:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.stagger-fade > *:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================
+   SCROLLBAR
+   ============================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+
+/* ============================
+   SELECTION
+   ============================ */
+::selection {
+  background: rgba(139, 92, 246, 0.4);
+  color: white;
+}
+
+/* ============================
+   FOCUS STYLES
+   ============================ */
+:focus-visible {
+  outline: 2px solid var(--accent-violet);
+  outline-offset: 2px;
+}
+
+/* ============================
+   BACKDROP BLUR EXTENSION
+   ============================ */
+.backdrop-blur-3xl {
+  backdrop-filter: blur(64px);
+  -webkit-backdrop-filter: blur(64px);
+}
