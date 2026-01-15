@@ -29,8 +29,8 @@ function TorusKnotMesh() {
     meshRef.current.rotation.y = time * 0.08;
 
     // Subtle cursor following
-    const targetX = mouseRef.current.x * 0.3;
-    const targetY = mouseRef.current.y * 0.3;
+    const targetX = mouseRef.current.x * 0.8;
+    const targetY = mouseRef.current.y * 0.8;
 
     meshRef.current.position.x += (targetX - meshRef.current.position.x) * 0.02;
     meshRef.current.position.y += (targetY - meshRef.current.position.y) * 0.02;
