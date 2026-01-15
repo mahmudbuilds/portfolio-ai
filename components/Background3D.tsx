@@ -1,23 +1,25 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, Suspense } from "react";
+import { useRef, Suspense, useEffect } from "react";
 import * as THREE from "three";
 
-function TorusKnotMesh() {
+function TorusKnotMesh({ color = "#6366f1" }: { color?: string }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const { viewport } = useThree();
 
   // Track mouse position
-  if (typeof window !== "undefined") {
-    window.addEventListener("mousemove", (e) => {
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = {
         x: (e.clientX / window.innerWidth) * 2 - 1,
         y: -(e.clientY / window.innerHeight) * 2 + 1,
       };
-    });
-  }
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -29,8 +31,8 @@ function TorusKnotMesh() {
     meshRef.current.rotation.y = time * 0.08;
 
     // Subtle cursor following
-    const targetX = mouseRef.current.x * 0.8;
-    const targetY = mouseRef.current.y * 0.8;
+    const targetX = mouseRef.current.x * 0.5;
+    const targetY = mouseRef.current.y * 0.5;
 
     meshRef.current.position.x += (targetX - meshRef.current.position.x) * 0.02;
     meshRef.current.position.y += (targetY - meshRef.current.position.y) * 0.02;
@@ -39,12 +41,12 @@ function TorusKnotMesh() {
   return (
     <mesh ref={meshRef} scale={viewport.width > 10 ? 2.5 : 1.8}>
       <torusKnotGeometry args={[1, 0.3, 128, 16, 2, 3]} />
-      <meshBasicMaterial color="#6366f1" wireframe transparent opacity={0.15} />
+      <meshBasicMaterial color={color} wireframe transparent opacity={0.15} />
     </mesh>
   );
 }
 
-function GlowEffect() {
+function GlowEffect({ color = "#8b5cf6" }: { color?: string }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -61,25 +63,44 @@ function GlowEffect() {
   return (
     <mesh ref={meshRef}>
       <torusKnotGeometry args={[1, 0.3, 64, 8, 2, 3]} />
-      <meshBasicMaterial color="#8b5cf6" wireframe transparent opacity={0.05} />
+      <meshBasicMaterial color={color} wireframe transparent opacity={0.05} />
     </mesh>
   );
 }
 
-function Scene() {
+function Scene({
+  primaryColor,
+  accentColor,
+}: {
+  primaryColor?: string;
+  accentColor?: string;
+}) {
   return (
     <>
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={1} />
-      <TorusKnotMesh />
-      <GlowEffect />
+      <TorusKnotMesh color={primaryColor} />
+      <GlowEffect color={accentColor} />
     </>
   );
 }
 
-export default function Background3D() {
+interface Background3DProps {
+  primaryColor?: string;
+  accentColor?: string;
+  backgroundColor?: string;
+}
+
+export default function Background3D({
+  primaryColor = "#6366f1",
+  accentColor = "#8b5cf6",
+  backgroundColor = "#050505",
+}: Background3DProps) {
   return (
-    <div className="fixed inset-0 -z-10 pointer-events-none">
+    <div
+      className="fixed inset-0 -z-10 pointer-events-none transition-colors duration-1000"
+      style={{ backgroundColor }}
+    >
       <Canvas
         camera={{ position: [0, 0, 5], fov: 75 }}
         gl={{
@@ -90,7 +111,7 @@ export default function Background3D() {
         style={{ background: "transparent" }}
       >
         <Suspense fallback={null}>
-          <Scene />
+          <Scene primaryColor={primaryColor} accentColor={accentColor} />
         </Suspense>
       </Canvas>
 
@@ -98,8 +119,7 @@ export default function Background3D() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 0%, #050505 70%)",
+          background: `radial-gradient(ellipse at center, transparent 0%, ${backgroundColor} 70%)`,
         }}
       />
     </div>

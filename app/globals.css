@@ -192,13 +192,6 @@ h6 {
   color: white;
 }
 
-/* ============================
-   FOCUS STYLES
-   ============================ */
-:focus-visible {
-  outline: 2px solid var(--accent-violet);
-  outline-offset: 2px;
-}
 
 /* ============================
    BACKDROP BLUR EXTENSION

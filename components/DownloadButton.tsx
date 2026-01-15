@@ -66,12 +66,13 @@ function generatePageTsx(data: PortfolioData) {
 
 import { motion } from 'framer-motion';
 import { Star, GitFork, ExternalLink, Github, MapPin, Users } from 'lucide-react';
+import { useEffect } from 'react';
 
 const user = {
   name: "${data.user.name || data.user.login}",
   login: "${data.user.login}",
   avatar: "${data.user.avatar_url}",
-  bio: "${data.user.bio || ""}",
+  bio: "${(data.user.bio || "").replace(/"/g, '\\"')}",
   location: "${data.user.location || ""}",
   followers: ${data.user.followers},
   url: "${data.user.html_url}"
@@ -80,36 +81,58 @@ const user = {
 const repos = [${reposCode}
 ];
 
+const brand = {
+  primary: "${data.brand.primaryColor}",
+  accent: "${data.brand.accentColor}",
+  bg: "${data.brand.backgroundColor}",
+  font: "${data.brand.fontFamily}"
+};
+
 const languageColors: Record<string, string> = {
   TypeScript: '#3178c6',
   JavaScript: '#f7df1e',
   Python: '#3572A5',
   Rust: '#dea584',
   Go: '#00ADD8',
-  default: '#6366f1'
+  default: brand.primary
 };
 
 export default function Portfolio() {
+  useEffect(() => {
+    if (brand.font) {
+      const link = document.createElement("link");
+      link.href = \`https://fonts.googleapis.com/css2?family=\${brand.font.replace(/ /g, "+")}:wght@400;700&display=swap\`;
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
+    <div className="min-h-screen text-white" style={{ backgroundColor: brand.bg, fontFamily: brand.font ? \`'\${brand.font}', sans-serif\` : 'inherit' }}>
       {/* Hero */}
-      <header className="relative py-20 px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-violet-600/10 via-transparent to-transparent" />
+      <header className="relative py-24 px-6 text-center overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-20" 
+          style={{ background: \`radial-gradient(circle at center, \${brand.primary}, transparent)\` }} 
+        />
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative z-10"
         >
-          <img
-            src={user.avatar}
-            alt={user.name}
-            className="w-32 h-32 rounded-full mx-auto mb-6 border-2 border-white/20"
-          />
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-white via-violet-200 to-violet-400 bg-clip-text text-transparent">
+          <div className="relative inline-block mb-8">
+            <div className="absolute -inset-2 rounded-full blur-xl opacity-40 animate-pulse" style={{ background: brand.primary }} />
+            <img
+              src={user.avatar}
+              alt={user.name}
+              className="relative w-32 h-32 rounded-full border-2 border-white/20"
+            />
+          </div>
+          <h1 className="text-6xl font-bold mb-4 tracking-tighter">
             {user.name}
           </h1>
-          <p className="text-xl text-white/60 mb-6">{user.bio}</p>
-          <div className="flex justify-center gap-6 text-white/40">
+          <p className="text-xl text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed">{user.bio}</p>
+          <div className="flex justify-center flex-wrap gap-6 text-white/40 text-sm">
             {user.location && (
               <span className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" /> {user.location}
@@ -123,9 +146,8 @@ export default function Portfolio() {
       </header>
 
       {/* Projects */}
-      <main className="max-w-6xl mx-auto px-6 pb-20">
-        <h2 className="text-3xl font-bold mb-8 text-center">Featured Projects</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <main className="max-w-6xl mx-auto px-6 pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {repos.map((repo, i) => (
             <motion.a
               key={repo.name}
@@ -135,27 +157,34 @@ export default function Portfolio() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              className="group p-6 rounded-2xl bg-white/[0.03] backdrop-blur border border-white/10 hover:border-white/20"
+              whileHover={{ y: -5 }}
+              className="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden"
             >
-              <div className="flex items-center gap-2 mb-3">
-                <span
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: languageColors[repo.language] || languageColors.default }}
-                />
-                <span className="text-sm text-white/50">{repo.language}</span>
-              </div>
-              <h3 className="text-lg font-semibold mb-2 group-hover:text-violet-300 transition-colors">
-                {repo.headline}
-              </h3>
-              <p className="text-sm text-white/50 mb-4">{repo.summary}</p>
-              <div className="flex items-center gap-4 text-sm text-white/40">
-                <span className="flex items-center gap-1">
-                  <Star className="w-4 h-4" /> {repo.stars}
-                </span>
-                <span className="flex items-center gap-1">
-                  <GitFork className="w-4 h-4" /> {repo.forks}
-                </span>
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity" 
+                style={{ background: \`linear-gradient(to bottom right, \${brand.primary}, \${brand.accent})\` }}
+              />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: languageColors[repo.language] || languageColors.default }}
+                  />
+                  <span className="text-xs font-mono text-white/40 uppercase tracking-widest">{repo.language}</span>
+                </div>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-transparent group-hover:bg-clip-text transition-all" style={{ backgroundImage: \`linear-gradient(to right, \${brand.primary}, \${brand.accent})\` }}>
+                  {repo.headline}
+                </h3>
+                <p className="text-sm text-white/50 mb-6 leading-relaxed">{repo.summary}</p>
+                <div className="flex items-center gap-4 text-xs text-white/30 font-medium">
+                  <span className="flex items-center gap-1.5">
+                    <Star className="w-4 h-4" /> {repo.stars}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <GitFork className="w-4 h-4" /> {repo.forks}
+                  </span>
+                  <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
               </div>
             </motion.a>
           ))}
@@ -163,18 +192,18 @@ export default function Portfolio() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-10 border-t border-white/5">
+      <footer className="text-center py-20 border-t border-white/5">
         <a
           href={user.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-white/40 hover:text-violet-400 transition-colors"
+          className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors"
         >
           <Github className="w-5 h-5" />
-          View on GitHub
+          <span>Follow @{user.login}</span>
         </a>
-        <p className="mt-4 text-sm text-white/20">
-          Generated with PortfolioAI
+        <p className="mt-6 text-xs text-white/10 tracking-widest uppercase font-light">
+          Built with PortfolioAI
         </p>
       </footer>
     </div>
@@ -183,16 +212,13 @@ export default function Portfolio() {
 `;
 }
 
-function generateLayoutTsx() {
+function generateLayoutTsx(brand: any) {
   return `import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
-
 export const metadata: Metadata = {
-  title: 'My Portfolio',
-  description: 'Generated by PortfolioAI',
+  title: 'Portfolio | Built with PortfolioAI',
+  description: 'AI-generated developer portfolio',
 };
 
 export default function RootLayout({
@@ -201,8 +227,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className="dark">
+      <body className="antialiased min-h-screen" style={{ backgroundColor: '${brand.backgroundColor}' }}>
+        {children}
+      </body>
     </html>
   );
 }
@@ -220,6 +248,7 @@ function generateGlobalsCss() {
 body {
   background: var(--background);
   color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
 }
 `;
 }
@@ -298,7 +327,7 @@ export default function DownloadButton({ portfolioData }: DownloadButtonProps) {
       // App directory
       const app = zip.folder("app");
       app?.file("page.tsx", generatePageTsx(portfolioData));
-      app?.file("layout.tsx", generateLayoutTsx());
+      app?.file("layout.tsx", generateLayoutTsx(portfolioData.brand));
       app?.file("globals.css", generateGlobalsCss());
 
       // Public directory
@@ -333,10 +362,10 @@ export default function DownloadButton({ portfolioData }: DownloadButtonProps) {
       whileTap={{ scale: 0.98 }}
     >
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600" />
+      <div className="absolute inset-0 bg-linear-to-r from-violet-600 via-indigo-600 to-purple-600" />
 
       {/* Shimmer effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+      <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
 
       {/* Content */}
       <div className="relative flex items-center gap-3">

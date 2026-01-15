@@ -36,12 +36,12 @@ export default function SearchBar({
         <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 group-focus-within:opacity-60 transition-opacity duration-500" />
 
         {/* Main input container */}
-        <div className="relative flex items-center bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-          <div className="pl-5 text-white/40">
+        <div className="relative flex items-center bg-black/80 backdrop-blur-xl border border-white/10 group-focus-within:border-white/30 rounded-2xl overflow-hidden transition-colors duration-300">
+          <div className="pl-3 sm:pl-5 text-white/40">
             {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
             ) : (
-              <Search className="w-5 h-5" />
+              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
           </div>
 
@@ -49,17 +49,22 @@ export default function SearchBar({
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter GitHub username..."
+            placeholder="GitHub username..."
             disabled={isLoading}
-            className="flex-1 bg-transparent px-4 py-5 text-lg text-white placeholder-white/30 focus:outline-none disabled:opacity-50"
+            className="flex-1 bg-transparent px-3 sm:px-4 py-4 sm:py-5 text-base sm:text-lg text-white placeholder-white/30 !outline-none focus:ring-0 disabled:opacity-50 min-w-0"
           />
 
           <button
             type="submit"
             disabled={isLoading || !username.trim()}
-            className="mr-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mr-1.5 sm:mr-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm sm:text-base font-medium rounded-xl hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
           >
-            {isLoading ? "Searching..." : "Generate"}
+            {isLoading ? (
+              <span className="hidden sm:inline">Searching...</span>
+            ) : (
+              "Generate"
+            )}
+            {isLoading && <span className="sm:hidden">...</span>}
           </button>
         </div>
       </form>

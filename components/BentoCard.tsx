@@ -12,8 +12,8 @@ interface BentoCardProps {
 
 const sizeClasses = {
   small: "col-span-1 row-span-1",
-  medium: "col-span-1 row-span-2 md:col-span-2 md:row-span-1",
-  large: "col-span-1 row-span-2 md:col-span-2 md:row-span-2",
+  medium: "col-span-1 row-span-1 md:col-span-2 md:row-span-1",
+  large: "col-span-1 row-span-1 md:col-span-2 md:row-span-2",
 };
 
 const languageColors: Record<string, string> = {
@@ -49,7 +49,7 @@ export default function BentoCard({
       className={`
         ${sizeClasses[size]}
         group relative block p-6 rounded-3xl overflow-hidden
-        bg-white/[0.03] backdrop-blur-3xl
+        bg-white/3 backdrop-blur-3xl
         border border-white/10 hover:border-white/20
         transition-colors duration-500
       `}
@@ -69,7 +69,12 @@ export default function BentoCard({
     >
       {/* Gradient glow on hover */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/10 via-transparent to-indigo-600/10" />
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: `linear-gradient(to bottom right, var(--primary), transparent, var(--accent))`,
+          }}
+        />
       </div>
 
       {/* Content */}
@@ -91,7 +96,7 @@ export default function BentoCard({
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-violet-300 transition-colors">
+        <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-(--primary) transition-colors">
           {repo.aiContent?.headline || repo.name}
         </h3>
 

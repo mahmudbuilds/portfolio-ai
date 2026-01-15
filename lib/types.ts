@@ -39,6 +39,16 @@ export interface GitHubRepo {
   default_branch: string;
 }
 
+export interface BrandIdentity {
+  primaryColor: string;
+  accentColor: string;
+  backgroundColor: string;
+  typography: "modern" | "classic" | "mono" | "brutal";
+  vibe: "neon" | "glass" | "minimal" | "organic" | "industrial";
+  layoutPattern: "bento" | "split" | "magazine" | "feed";
+  fontFamily: string;
+}
+
 export interface AIGeneratedContent {
   headline: string;
   summary: string;
@@ -51,6 +61,7 @@ export interface EnhancedRepo extends GitHubRepo {
 export interface PortfolioData {
   user: GitHubUser;
   repos: EnhancedRepo[];
+  brand: BrandIdentity;
   generatedAt: string;
 }
 

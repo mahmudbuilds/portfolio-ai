@@ -14,6 +14,7 @@ import {
   EnhancedRepo,
   PortfolioData,
   AIGeneratedContent,
+  BrandIdentity,
 } from "@/lib/types";
 
 // Dynamic import for 3D background to avoid SSR issues
@@ -68,6 +69,7 @@ async function generateAIContent(repo: {
 export default function Home() {
   const [user, setUser] = useState<GitHubUser | null>(null);
   const [repos, setRepos] = useState<EnhancedRepo[]>([]);
+  const [brand, setBrand] = useState<BrandIdentity | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,17 +77,48 @@ export default function Home() {
   const handleSearch = async (username: string) => {
     setIsLoading(true);
     setError(null);
-    setUser(null);
+    setBrand(null);
+    setUser(null); // Return to landing page during search
     setRepos([]);
 
     try {
+      // 1. Fetch GitHub Profile
       const { user: fetchedUser, repos: fetchedRepos } = await fetchFullProfile(
         username
       );
-      setUser(fetchedUser);
-      setRepos(fetchedRepos);
 
-      // Generate AI content for top repos (limit to 6 for demo)
+      // 2. Generate Brand Identity
+      const brandResponse = await fetch("/api/generate/brand", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: fetchedUser,
+          topRepos: fetchedRepos.slice(0, 5),
+        }),
+      });
+
+      let finalBrand: BrandIdentity | null = null;
+      if (brandResponse.ok) {
+        finalBrand = await brandResponse.json();
+      } else {
+        // Essential fallback for resilience
+        finalBrand = {
+          primaryColor: "#8b5cf6",
+          accentColor: "#6366f1",
+          backgroundColor: "#050505",
+          typography: "modern",
+          vibe: "glass",
+          layoutPattern: "bento",
+          fontFamily: "Inter",
+        };
+      }
+
+      // 3. Set basic data and switch view
+      setBrand(finalBrand);
+      setRepos(fetchedRepos);
+      setUser(fetchedUser);
+
+      // 4. Generate AI content for top repos (background enhancement)
       if (fetchedRepos.length > 0) {
         setIsGeneratingAI(true);
         const topRepos = fetchedRepos.slice(0, 6);
@@ -102,28 +135,35 @@ export default function Home() {
           })
         );
 
-        // Combine AI-enhanced repos with remaining repos
         setRepos([...enhancedRepos, ...fetchedRepos.slice(6)]);
         setIsGeneratingAI(false);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch user");
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const portfolioData: PortfolioData | null = user
-    ? {
-        user,
-        repos,
-        generatedAt: new Date().toISOString(),
-      }
-    : null;
+  const portfolioData: PortfolioData | null =
+    user && brand
+      ? {
+          user,
+          repos,
+          brand,
+          generatedAt: new Date().toISOString(),
+        }
+      : null;
 
   return (
     <>
-      <Background3D />
+      <Background3D
+        primaryColor={brand?.primaryColor}
+        accentColor={brand?.accentColor}
+        backgroundColor={brand?.backgroundColor}
+      />
+
       <NoiseOverlay />
 
       <div className="relative min-h-screen">
@@ -134,9 +174,11 @@ export default function Home() {
               key="hero"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0, y: -50 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               className="min-h-screen flex flex-col items-center justify-center px-6 py-20"
             >
+              <div className="absolute inset-0 bg-radial from-violet-500/5 to-transparent pointer-events-none" />
+
               {/* Badge */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -146,7 +188,7 @@ export default function Home() {
               >
                 <Sparkles className="w-4 h-4 text-violet-400" />
                 <span className="text-sm text-violet-300">
-                  Powered by Gemini 2.5 Flash
+                  Powered by Gemini 2.0 Flash
                 </span>
               </motion.div>
 
@@ -155,7 +197,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-5xl md:text-7xl lg:text-8xl font-bold text-center mb-6 leading-tight"
+                className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center mb-6 leading-[1.1] md:leading-tight tracking-tighter"
               >
                 <span className="gradient-text">Transform</span>
                 <br />
@@ -169,88 +211,69 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-lg md:text-xl text-white/50 text-center max-w-2xl mb-12"
+                className="text-base sm:text-lg md:text-xl text-white/50 text-center max-w-2xl mb-8 md:mb-12 font-light px-4"
               >
-                AI-enhanced project descriptions. Premium design.
+                Unique brand identities generated for every developer.
                 <br className="hidden md:block" />
-                Export as a complete Next.js 16 app. Zero configuration.
+                Export as a production-ready Next.js 16 app.
               </motion.p>
 
               {/* Search Bar */}
-              <SearchBar
-                onSearch={handleSearch}
-                isLoading={isLoading}
-                error={error}
-              />
-
-              {/* Features */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="flex flex-wrap justify-center gap-6 mt-16 text-white/40 text-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <Github className="w-4 h-4" />
-                  <span>GitHub API</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-yellow-500" />
-                  <span>Gemini AI</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Package className="w-4 h-4 text-violet-400" />
-                  <span>Instant Export</span>
-                </div>
-              </motion.div>
-
-              {/* Scroll indicator */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2"
-              >
-                <motion.div
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                  className="text-white/20"
-                >
-                  <ArrowDown className="w-5 h-5" />
-                </motion.div>
-              </motion.div>
+              <div className="w-full max-w-xl px-4">
+                <SearchBar
+                  onSearch={handleSearch}
+                  isLoading={isLoading}
+                  error={error}
+                />
+              </div>
             </motion.section>
           ) : (
             <motion.section
               key="portfolio"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              className="py-20"
+              exit={{ opacity: 0, y: 50 }}
+              className="py-12 md:py-20 min-h-screen"
             >
               {/* Back button & actions */}
-              <div className="max-w-6xl mx-auto px-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="max-w-6xl mx-auto px-4 md:px-6 mb-8 md:mb-12 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <button
                   onClick={() => {
                     setUser(null);
                     setRepos([]);
+                    setBrand(null);
                   }}
-                  className="text-white/40 hover:text-white transition-colors flex items-center gap-2"
+                  className="w-full sm:w-auto group py-2 px-6 rounded-xl border border-white/5 hover:border-white/20 transition-all flex items-center justify-center gap-2 text-white/40 hover:text-white"
                 >
-                  <span>←</span>
-                  <span>New Search</span>
+                  <span className="group-hover:-translate-x-1 transition-transform">
+                    ←
+                  </span>
+                  <span>Create Another</span>
                 </button>
 
                 {portfolioData && (
-                  <DownloadButton portfolioData={portfolioData} />
+                  <div className="w-full sm:w-auto">
+                    <DownloadButton portfolioData={portfolioData} />
+                  </div>
                 )}
               </div>
 
               {/* Portfolio Preview */}
-              <PortfolioPreview
-                user={user}
-                repos={repos}
-                isGeneratingAI={isGeneratingAI}
-              />
+              {user && brand ? (
+                <PortfolioPreview
+                  user={user}
+                  repos={repos}
+                  brand={brand}
+                  isGeneratingAI={isGeneratingAI}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center py-40 gap-4">
+                  <div className="w-12 h-12 border-4 border-violet-500/20 border-t-violet-500 rounded-full animate-spin" />
+                  <p className="text-white/40 animate-pulse font-mono tracking-widest text-sm uppercase">
+                    Designing your brand...
+                  </p>
+                </div>
+              )}
             </motion.section>
           )}
         </AnimatePresence>
