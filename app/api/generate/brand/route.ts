@@ -8,15 +8,18 @@ Your goal is to make every developer feel unique. Analyze their:
 3. Complexity and types of projects
 
 Generate a Brand Identity including:
-- primaryColor: A vibrant accent color (e.g., #FF3366)
-- accentColor: A secondary complementary color
-- backgroundColor: A deep background tint (e.g., #050505 or #0a0a15)
-- typography: One of [modern, classic, mono, brutal]
-- fontFamily: A specific Google Font name that fits the vibe
-- vibe: One of [neon, glass, minimal, organic, industrial]
-- layoutPattern: One of [bento, split, magazine, feed]
+- primaryColor: A vibrant, unique accent color (Avoid generic blue/purple unless specifically requested by dev context). Use deep, rich, or unusual hues.
+- accentColor: A secondary complementary color that adds depth.
+- backgroundColor: A deep background tint (e.g., #050505 or #0a0a15) or a very clean off-white (#fbfbfb) for light mode.
+- typography: One of [modern-sans, sophisticated-serif, sleek-mono, experimental-display]
+- fontFamily: A specific high-end Google Font (e.g., 'Inter', 'Outfit', 'Playfair Display', 'Syne', 'Clash Display', 'Space Grotesk', 'Bormioli', 'Cabinet Grotesk')
+- vibe: One of [neon-cyber, glassmorphism, hyper-minimal, organic-fluid, industrial-brutalist, futuristic-luxury]
+- layoutPattern: One of [bento-grid, staggered-masonry, minimalist-split, magazine-editorial]
+- themePreference: One of [dark, light, system]
 
-Return as JSON: { "primaryColor": "...", "accentColor": "...", "backgroundColor": "...", "typography": "...", "fontFamily": "...", "vibe": "...", "layoutPattern": "..." }`;
+CRITICAL: The colors must be unique and premium. Avoid basic gradients. The design should feel like a custom-coded high-end agency site.
+
+Return as JSON: { "primaryColor": "...", "accentColor": "...", "backgroundColor": "...", "typography": "...", "fontFamily": "...", "vibe": "...", "layoutPattern": "...", "themePreference": "..." }`;
 
 export async function POST(req: NextRequest) {
   try {

@@ -3,6 +3,14 @@
 import { motion } from "framer-motion";
 import { Star, GitFork, ExternalLink, Code2 } from "lucide-react";
 import { EnhancedRepo } from "@/lib/types";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface BentoCardProps {
   repo: EnhancedRepo;
@@ -42,17 +50,8 @@ export default function BentoCard({
     : languageColors.default;
 
   return (
-    <motion.a
-      href={repo.html_url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`
-        ${sizeClasses[size]}
-        group relative block p-6 rounded-3xl overflow-hidden
-        bg-white/3 backdrop-blur-3xl
-        border border-white/10 hover:border-white/20
-        transition-colors duration-500
-      `}
+    <motion.div
+      className={sizeClasses[size]}
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -62,69 +61,85 @@ export default function BentoCard({
         stiffness: 100,
         damping: 15,
       }}
-      whileHover={{
-        scale: 1.02,
-        transition: { type: "spring", stiffness: 400, damping: 25 },
-      }}
     >
-      {/* Gradient glow on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            background: `linear-gradient(to bottom right, var(--primary), transparent, var(--accent))`,
-          }}
+      <Card className="group relative h-full flex flex-col overflow-hidden bg-white/3 backdrop-blur-3xl border-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-2xl hover:shadow-[var(--primary)]/10">
+        <a
+          href={repo.html_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute inset-0 z-20"
         />
-      </div>
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex flex-col">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-2">
-            {repo.language && (
-              <span
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: languageColor }}
-              />
-            )}
-            <span className="text-white/50 text-sm font-mono">
-              {repo.language || "Unknown"}
-            </span>
-          </div>
-          <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-white/60 transition-colors" />
+        {/* Gradient glow on hover */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+          <div
+            className="absolute inset-0 opacity-5"
+            style={{
+              background: `radial-gradient(circle at center, var(--primary), transparent 70%)`,
+            }}
+          />
         </div>
 
-        {/* Title */}
-        <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-(--primary) transition-colors">
-          {repo.aiContent?.headline || repo.name}
-        </h3>
+        <CardHeader className="relative z-10 pb-2">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              {repo.language && (
+                <Badge
+                  variant="outline"
+                  className="bg-white/5 border-white/10 text-[10px] py-0 px-2 h-5"
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full mr-1.5"
+                    style={{ backgroundColor: languageColor }}
+                  />
+                  {repo.language}
+                </Badge>
+              )}
+            </div>
+            <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-[var(--primary)] transition-colors duration-300" />
+          </div>
+          <CardTitle className="text-xl font-bold text-white group-hover:text-[var(--primary)] transition-colors duration-300 leading-tight">
+            {repo.aiContent?.headline || repo.name}
+          </CardTitle>
+        </CardHeader>
 
-        {/* Description */}
-        <p className="text-white/50 text-sm leading-relaxed flex-1">
-          {repo.aiContent?.summary ||
-            repo.description ||
-            "No description available"}
-        </p>
+        <CardContent className="relative z-10 flex-1">
+          <p className="text-white/60 text-sm leading-relaxed line-clamp-3 group-hover:text-white/80 transition-colors">
+            {repo.aiContent?.summary ||
+              repo.description ||
+              "No description available"}
+          </p>
+        </CardContent>
 
-        {/* Stats */}
-        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-white/5">
-          <div className="flex items-center gap-1.5 text-white/40 text-sm">
-            <Star className="w-4 h-4" />
+        <CardFooter className="relative z-10 pt-4 border-t border-white/5 flex flex-wrap gap-3">
+          <div className="flex items-center gap-1.5 text-white/40 text-[12px]">
+            <Star className="w-3.5 h-3.5" />
             <span>{repo.stargazers_count.toLocaleString()}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-white/40 text-sm">
-            <GitFork className="w-4 h-4" />
+          <div className="flex items-center gap-1.5 text-white/40 text-[12px]">
+            <GitFork className="w-3.5 h-3.5" />
             <span>{repo.forks_count.toLocaleString()}</span>
           </div>
-          {repo.topics?.length > 0 && (
-            <div className="flex items-center gap-1.5 text-white/40 text-sm ml-auto">
-              <Code2 className="w-4 h-4" />
-              <span>{repo.topics.length}</span>
+          {repo.topics && repo.topics.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1">
+              {repo.topics.slice(0, 2).map((topic) => (
+                <Badge
+                  key={topic}
+                  variant="secondary"
+                  className="bg-white/5 border-none text-[9px] h-4 opacity-50 group-hover:opacity-80 transition-opacity"
+                >
+                  {topic}
+                </Badge>
+              ))}
+              {repo.topics.length > 2 && (
+                <span className="text-[9px] text-white/30">
+                  +{repo.topics.length - 2}
+                </span>
+              )}
             </div>
           )}
-        </div>
-      </div>
-    </motion.a>
+        </CardFooter>
+      </Card>
+    </motion.div>
   );
 }

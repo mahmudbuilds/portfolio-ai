@@ -43,10 +43,25 @@ export interface BrandIdentity {
   primaryColor: string;
   accentColor: string;
   backgroundColor: string;
-  typography: "modern" | "classic" | "mono" | "brutal";
-  vibe: "neon" | "glass" | "minimal" | "organic" | "industrial";
-  layoutPattern: "bento" | "split" | "magazine" | "feed";
+  typography:
+    | "modern-sans"
+    | "sophisticated-serif"
+    | "sleek-mono"
+    | "experimental-display";
+  vibe:
+    | "neon-cyber"
+    | "glassmorphism"
+    | "hyper-minimal"
+    | "organic-fluid"
+    | "industrial-brutalist"
+    | "futuristic-luxury";
+  layoutPattern:
+    | "bento-grid"
+    | "staggered-masonry"
+    | "minimalist-split"
+    | "magazine-editorial";
   fontFamily: string;
+  themePreference: "dark" | "light" | "system";
 }
 
 export interface AIGeneratedContent {
