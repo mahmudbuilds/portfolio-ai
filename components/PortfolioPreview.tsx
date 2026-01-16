@@ -52,19 +52,8 @@ export default function PortfolioPreview({
     }
   }, [brand.fontFamily]);
 
-  // Handle Theme Preference
-  useEffect(() => {
-    const root = document.documentElement;
-    if (brand.themePreference === "light") {
-      root.setAttribute("data-theme", "light");
-    } else if (brand.themePreference === "dark") {
-      root.setAttribute("data-theme", "dark");
-    } else {
-      // System preference
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      root.setAttribute("data-theme", isDark ? "dark" : "light");
-    }
-  }, [brand.themePreference]);
+  // No longer manually setting data-theme here as next-themes handles it.
+  // We just let the global CSS variables and class-based theming do the work.
 
   const themeStyles = {
     "--primary": brand.primaryColor,
@@ -95,7 +84,7 @@ export default function PortfolioPreview({
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "circOut" }}
-      className="relative mb-12 py-16 md:py-24 text-center overflow-hidden rounded-(--radius) bg-white/2 border border-white/10 px-8"
+      className="relative mb-12 py-16 md:py-24 text-center overflow-hidden rounded-(--radius) bg-foreground/[0.03] border border-border px-8 shadow-[var(--card-shadow)]"
       style={{
         backdropFilter: `blur(${brand.designTokens.glassOpacity * 100}px)`,
       }}
@@ -116,26 +105,26 @@ export default function PortfolioPreview({
             src={user.avatar_url}
             alt={user.name || user.login}
             referrerPolicy="no-referrer"
-            className="relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full border-(--border-width) border-white/10 object-cover bg-white/5 shadow-2xl"
+            className="relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full border-(--border-width) border-foreground/10 object-cover bg-foreground/5 shadow-2xl"
           />
         </div>
         <div className="space-y-4 max-w-3xl">
-          <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter text-white mb-2">
+          <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter text-foreground mb-2">
             {user.name || user.login}
           </h1>
           {user.bio && (
-            <p className="text-white/60 text-lg md:text-xl leading-relaxed">
+            <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
               {user.bio}
             </p>
           )}
           <div className="flex flex-wrap justify-center gap-4 text-sm font-medium">
             {user.location && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/50">
                 <MapPin className="w-4 h-4" />
                 {user.location}
               </div>
             )}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/50">
               <Users className="w-4 h-4" />
               {user.followers.toLocaleString()} Followers
             </div>
@@ -152,10 +141,10 @@ export default function PortfolioPreview({
         animate={{ opacity: 1, x: 0 }}
         className="space-y-6 text-left"
       >
-        <h1 className="text-5xl md:text-8xl font-black tracking-tight text-white leading-[0.9]">
+        <h1 className="text-5xl md:text-8xl font-black tracking-tight text-foreground leading-[0.9]">
           {user.name || user.login}
         </h1>
-        <p className="text-xl text-white/50 max-w-lg">{user.bio}</p>
+        <p className="text-xl text-foreground/50 max-w-lg">{user.bio}</p>
         <div className="flex gap-4">
           <div
             className="h-1 w-20 rounded-full"
@@ -179,7 +168,7 @@ export default function PortfolioPreview({
         <img
           src={user.avatar_url}
           alt={user.name || user.login}
-          className="relative z-10 w-full h-full object-cover rounded-(--radius) border border-white/10 grayscale hover:grayscale-0 transition-all duration-700"
+          className="relative z-10 w-full h-full object-cover rounded-(--radius) border border-border grayscale hover:grayscale-0 transition-all duration-700 shadow-[var(--card-shadow)]"
         />
       </motion.div>
     </div>
@@ -234,13 +223,13 @@ export default function PortfolioPreview({
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ delay: i * 0.1 }}
-          className="p-6 rounded-(--radius) bg-white/2 border border-white/10 flex flex-col items-center justify-center text-center"
+          className="p-6 rounded-(--radius) bg-foreground/[0.03] border border-border flex flex-col items-center justify-center text-center transition-colors shadow-[var(--card-shadow)]"
         >
-          <stat.icon className="w-5 h-5 mb-2 text-white/30" />
-          <span className="text-3xl font-bold text-white">
+          <stat.icon className="w-5 h-5 mb-2 text-foreground/30" />
+          <span className="text-3xl font-bold text-foreground">
             {stat.value.toLocaleString()}
           </span>
-          <span className="text-xs uppercase tracking-widest text-white/40 mt-1">
+          <span className="text-xs uppercase tracking-widest text-foreground/40 mt-1">
             {stat.label}
           </span>
         </motion.div>
@@ -330,7 +319,7 @@ export default function PortfolioPreview({
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 flex justify-center"
         >
-          <div className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-[11px] uppercase tracking-[0.2em] text-white/40 backdrop-blur-md shadow-2xl">
+          <div className="px-6 py-2 rounded-full bg-foreground/[0.03] border border-foreground/10 text-[11px] uppercase tracking-[0.2em] text-foreground/40 backdrop-blur-md shadow-2xl">
             <span className="text-(--primary) font-bold mr-3">
               Architecture:
             </span>
@@ -344,7 +333,7 @@ export default function PortfolioPreview({
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10"
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-foreground/5 border border-foreground/10"
           >
             <Sparkles
               className="w-5 h-5 animate-spin-slow"

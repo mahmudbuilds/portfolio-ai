@@ -52,10 +52,13 @@ export default function BentoCard({
     : brand.primaryColor;
 
   const glassStyle = {
-    backgroundColor: `rgba(255, 255, 255, ${brand.designTokens.glassOpacity})`,
+    backgroundColor: `hsla(var(--foreground), ${
+      brand.designTokens.glassOpacity * 0.5
+    })`,
     backdropFilter: `blur(${brand.designTokens.glassOpacity * 100}px)`,
     borderRadius: "var(--radius)",
     borderWidth: "var(--border-width)",
+    boxShadow: "var(--card-shadow)",
   };
 
   return (
@@ -74,7 +77,7 @@ export default function BentoCard({
     >
       <Card
         style={glassStyle}
-        className="group relative h-full flex flex-col overflow-hidden border-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-2xl"
+        className="group relative h-full flex flex-col overflow-hidden border-foreground/[0.15] hover:border-foreground/[0.25] transition-all duration-500"
       >
         <a
           href={repo.html_url}
@@ -99,7 +102,7 @@ export default function BentoCard({
               {repo.language && (
                 <Badge
                   variant="outline"
-                  className="bg-white/5 border-white/10 text-[10px] py-0 px-2 h-5"
+                  className="bg-foreground/5 border-foreground/10 text-[10px] py-0 px-2 h-5"
                 >
                   <span
                     className="w-1.5 h-1.5 rounded-full mr-1.5"
@@ -109,27 +112,27 @@ export default function BentoCard({
                 </Badge>
               )}
             </div>
-            <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-[var(--primary)] transition-colors duration-300" />
+            <ExternalLink className="w-4 h-4 text-foreground/30 group-hover:text-[var(--primary)] transition-colors duration-300" />
           </div>
-          <CardTitle className="text-xl font-bold text-white group-hover:text-[var(--primary)] transition-colors duration-300 leading-tight">
+          <CardTitle className="text-xl font-bold text-foreground group-hover:text-[var(--primary)] transition-colors duration-300 leading-tight">
             {repo.aiContent?.headline || repo.name}
           </CardTitle>
         </CardHeader>
 
         <CardContent className="relative z-10 flex-1">
-          <p className="text-white/60 text-sm leading-relaxed line-clamp-3 group-hover:text-white/80 transition-colors">
+          <p className="text-foreground/60 text-sm leading-relaxed line-clamp-3 group-hover:text-foreground/80 transition-colors">
             {repo.aiContent?.summary ||
               repo.description ||
               "No description available"}
           </p>
         </CardContent>
 
-        <CardFooter className="relative z-10 pt-4 border-t border-white/5 flex flex-wrap gap-3">
-          <div className="flex items-center gap-1.5 text-white/40 text-[12px]">
+        <CardFooter className="relative z-10 pt-4 border-t border-foreground/5 flex flex-wrap gap-3">
+          <div className="flex items-center gap-1.5 text-foreground/40 text-[12px]">
             <Star className="w-3.5 h-3.5" />
             <span>{repo.stargazers_count.toLocaleString()}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-white/40 text-[12px]">
+          <div className="flex items-center gap-1.5 text-foreground/40 text-[12px]">
             <GitFork className="w-3.5 h-3.5" />
             <span>{repo.forks_count.toLocaleString()}</span>
           </div>
@@ -139,13 +142,13 @@ export default function BentoCard({
                 <Badge
                   key={topic}
                   variant="secondary"
-                  className="bg-white/5 border-none text-[9px] h-4 opacity-50 group-hover:opacity-80 transition-opacity"
+                  className="bg-foreground/5 border-none text-[9px] h-4 opacity-50 group-hover:opacity-80 transition-opacity"
                 >
                   {topic}
                 </Badge>
               ))}
               {repo.topics.length > 2 && (
-                <span className="text-[9px] text-white/30">
+                <span className="text-[9px] text-foreground/30">
                   +{repo.topics.length - 2}
                 </span>
               )}

@@ -8,6 +8,7 @@ import SearchBar from "@/components/SearchBar";
 import PortfolioPreview from "@/components/PortfolioPreview";
 import DownloadButton from "@/components/DownloadButton";
 import NoiseOverlay from "@/components/NoiseOverlay";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { fetchFullProfile } from "@/lib/github";
 import {
   GitHubUser,
@@ -191,10 +192,13 @@ export default function Home() {
       <Background3D
         primaryColor={brand?.primaryColor}
         accentColor={brand?.accentColor}
-        backgroundColor={brand?.backgroundColor}
       />
 
       <NoiseOverlay />
+
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-2">
+        <ThemeToggle />
+      </div>
 
       <div className="relative min-h-screen">
         {/* Hero Section */}
@@ -231,9 +235,9 @@ export default function Home() {
               >
                 <span className="gradient-text">Transform</span>
                 <br />
-                <span className="text-white">Your GitHub</span>
+                <span className="text-foreground">Your GitHub</span>
                 <br />
-                <span className="text-white/60">Into a Portfolio</span>
+                <span className="text-foreground/60">Into a Portfolio</span>
               </motion.h1>
 
               {/* Subheadline */}
@@ -241,7 +245,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-base sm:text-lg md:text-xl text-white/50 text-center max-w-2xl mb-8 md:mb-12 font-light px-4"
+                className="text-base sm:text-lg md:text-xl text-foreground/50 text-center max-w-2xl mb-8 md:mb-12 font-light px-4"
               >
                 Unique brand identities generated for every developer.
                 <br className="hidden md:block" />

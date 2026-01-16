@@ -68,6 +68,8 @@ function GlowEffect({ color = "#8b5cf6" }: { color?: string }) {
   );
 }
 
+import { useTheme } from "next-themes";
+
 function Scene({
   primaryColor,
   accentColor,
@@ -75,10 +77,13 @@ function Scene({
   primaryColor?: string;
   accentColor?: string;
 }) {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
+      <ambientLight intensity={isLight ? 1.5 : 0.5} />
+      <pointLight position={[10, 10, 10]} intensity={isLight ? 2 : 1} />
       <TorusKnotMesh color={primaryColor} />
       <GlowEffect color={accentColor} />
     </>
@@ -94,13 +99,9 @@ interface Background3DProps {
 export default function Background3D({
   primaryColor = "#6366f1",
   accentColor = "#8b5cf6",
-  backgroundColor = "#050505",
 }: Background3DProps) {
   return (
-    <div
-      className="fixed inset-0 -z-10 pointer-events-none transition-colors duration-1000"
-      style={{ backgroundColor }}
-    >
+    <div className="fixed inset-0 -z-10 pointer-events-none transition-colors duration-1000 bg-background">
       <Canvas
         camera={{ position: [0, 0, 5], fov: 75 }}
         gl={{
@@ -115,11 +116,11 @@ export default function Background3D({
         </Suspense>
       </Canvas>
 
-      {/* Gradient overlay for depth */}
+      {/* Gradient overlay for depth - using theme-aware background color */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at center, transparent 0%, ${backgroundColor} 70%)`,
+          background: `radial-gradient(ellipse at center, transparent 0%, var(--background) 80%)`,
         }}
       />
     </div>

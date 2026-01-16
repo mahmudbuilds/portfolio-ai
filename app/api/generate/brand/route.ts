@@ -12,8 +12,8 @@ Analyze:
 3. Personal vibe: Minimalist, experimental, industrial, luxury, etc.
 
 Generate a Brand Identity with:
-- primaryColor, accentColor, secondaryColor: Unique, high-end color palette. Avoid clichés.
-- backgroundColor: A deep background tint or sophisticated light-mode base.
+- backgroundColor: A deep background tint (e.g. #050505) or sophisticated light-mode base (#fbfbfb). Ensure colors have high contrast against this.
+- primaryColor, accentColor, secondaryColor: Unique, high-end color palette. Ensure these remain readable on both light and dark backgrounds if possible, or provide colors that skew towards a balanced luminance.
 - designRationale: A 1-2 sentence explanation of why this bespoke design architecture fits this specific entity perfectly.
 - typography: [modern-sans, sophisticated-serif, sleek-mono, experimental-display, brutalist-bold]
 - fontFamily: A specific high-end Google Font.
