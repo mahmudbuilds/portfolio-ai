@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { EnhancedRepo, GitHubUser, BrandIdentity } from "@/lib/types";
 import BentoCard from "./BentoCard";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 import {
   MapPin,
   Link as LinkIcon,
@@ -68,21 +69,251 @@ export default function PortfolioPreview({
   const themeStyles = {
     "--primary": brand.primaryColor,
     "--accent": brand.accentColor,
+    "--secondary": brand.secondaryColor || brand.accentColor,
     "--bg-tint": brand.backgroundColor,
+    "--radius":
+      brand.designTokens.borderRadius === "none"
+        ? "0"
+        : brand.designTokens.borderRadius === "sm"
+        ? "0.25rem"
+        : brand.designTokens.borderRadius === "md"
+        ? "0.5rem"
+        : brand.designTokens.borderRadius === "lg"
+        ? "1rem"
+        : "9999px",
+    "--glass-opacity": brand.designTokens.glassOpacity,
+    "--border-width": `${brand.designTokens.borderWidth}px`,
     "--font-main": brand.fontFamily
       ? `'${brand.fontFamily}', sans-serif`
       : "inherit",
   } as React.CSSProperties;
 
-  // Dynamic layout class based on AI pattern
-  const layoutClass =
-    brand.layoutPattern === "staggered-masonry"
-      ? "columns-1 sm:columns-2 lg:columns-3 gap-4"
-      : brand.layoutPattern === "minimalist-split"
-      ? "grid grid-cols-1 lg:grid-cols-2 gap-8"
-      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min md:auto-rows-[200px]";
+  // --- Layout Modules ---
 
-  const isBento = brand.layoutPattern === "bento-grid";
+  const HeroMain = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "circOut" }}
+      className="relative mb-12 py-16 md:py-24 text-center overflow-hidden rounded-(--radius) bg-white/2 border border-white/10 px-8"
+      style={{
+        backdropFilter: `blur(${brand.designTokens.glassOpacity * 100}px)`,
+      }}
+    >
+      <div
+        className="absolute -top-24 -right-24 w-96 h-96 rounded-full blur-[120px] opacity-20 transition-colors duration-1000"
+        style={{ backgroundColor: brand.primaryColor }}
+      />
+      <div className="relative z-10 flex flex-col items-center gap-8">
+        <div className="relative group">
+          <div
+            className="absolute -inset-2 rounded-full blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-700 animate-pulse"
+            style={{
+              background: `linear-gradient(to right, ${brand.primaryColor}, ${brand.accentColor})`,
+            }}
+          />
+          <img
+            src={user.avatar_url}
+            alt={user.name || user.login}
+            referrerPolicy="no-referrer"
+            className="relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full border-(--border-width) border-white/10 object-cover bg-white/5 shadow-2xl"
+          />
+        </div>
+        <div className="space-y-4 max-w-3xl">
+          <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter text-white mb-2">
+            {user.name || user.login}
+          </h1>
+          {user.bio && (
+            <p className="text-white/60 text-lg md:text-xl leading-relaxed">
+              {user.bio}
+            </p>
+          )}
+          <div className="flex flex-wrap justify-center gap-4 text-sm font-medium">
+            {user.location && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+                <MapPin className="w-4 h-4" />
+                {user.location}
+              </div>
+            )}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+              <Users className="w-4 h-4" />
+              {user.followers.toLocaleString()} Followers
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  const HeroSplit = () => (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 items-center">
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="space-y-6 text-left"
+      >
+        <h1 className="text-5xl md:text-8xl font-black tracking-tight text-white leading-[0.9]">
+          {user.name || user.login}
+        </h1>
+        <p className="text-xl text-white/50 max-w-lg">{user.bio}</p>
+        <div className="flex gap-4">
+          <div
+            className="h-1 w-20 rounded-full"
+            style={{ backgroundColor: brand.primaryColor }}
+          />
+          <div
+            className="h-1 w-10 rounded-full opacity-30"
+            style={{ backgroundColor: brand.accentColor }}
+          />
+        </div>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="relative aspect-square max-w-md mx-auto lg:ml-auto"
+      >
+        <div
+          className="absolute inset-0 rounded-(--radius) blur-3xl opacity-20"
+          style={{ backgroundColor: brand.primaryColor }}
+        />
+        <img
+          src={user.avatar_url}
+          alt={user.name || user.login}
+          className="relative z-10 w-full h-full object-cover rounded-(--radius) border border-white/10 grayscale hover:grayscale-0 transition-all duration-700"
+        />
+      </motion.div>
+    </div>
+  );
+
+  const ProjectsBento = () => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min md:auto-rows-[200px] mb-20">
+      {repos.map((repo, index) => (
+        <BentoCard
+          key={repo.id}
+          repo={repo}
+          index={index}
+          size={getBentoSize(index, repos.length)}
+          brand={brand}
+        />
+      ))}
+    </div>
+  );
+
+  const ProjectsGrid = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+      {repos.map((repo, index) => (
+        <BentoCard
+          key={repo.id}
+          repo={repo}
+          index={index}
+          size="small"
+          brand={brand}
+        />
+      ))}
+    </div>
+  );
+
+  const StatsCard = () => (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
+      {[
+        { label: "Repos", value: user.public_repos, icon: Sparkles },
+        { label: "Followers", value: user.followers, icon: Users },
+        {
+          label: "Stars",
+          value: repos.reduce((a, b) => a + b.stargazers_count, 0),
+          icon: Sparkles,
+        },
+        {
+          label: "Forks",
+          value: repos.reduce((a, b) => a + b.forks_count, 0),
+          icon: Sparkles,
+        },
+      ].map((stat, i) => (
+        <motion.div
+          key={stat.label}
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ delay: i * 0.1 }}
+          className="p-6 rounded-(--radius) bg-white/2 border border-white/10 flex flex-col items-center justify-center text-center"
+        >
+          <stat.icon className="w-5 h-5 mb-2 text-white/30" />
+          <span className="text-3xl font-bold text-white">
+            {stat.value.toLocaleString()}
+          </span>
+          <span className="text-xs uppercase tracking-widest text-white/40 mt-1">
+            {stat.label}
+          </span>
+        </motion.div>
+      ))}
+    </div>
+  );
+
+  const renderSection = (section: string) => {
+    const style = brand.sectionStyles?.[section] || {
+      spacing: "normal",
+      alignment: "center",
+      visualWeight: "card",
+    };
+
+    const containerClasses = cn(
+      "w-full transition-all duration-700 relative",
+      style.spacing === "compact"
+        ? "py-4 mb-4"
+        : style.spacing === "spacious"
+        ? "py-24 mb-20"
+        : "py-12 mb-12",
+      style.alignment === "left"
+        ? "text-left items-start"
+        : style.alignment === "right"
+        ? "text-right items-end"
+        : "text-center items-center",
+      style.customClasses
+    );
+
+    let content;
+    switch (section) {
+      case "hero-main":
+        content = <HeroMain />;
+        break;
+      case "hero-split":
+        content = <HeroSplit />;
+        break;
+      case "projects-bento":
+        content = <ProjectsBento />;
+        break;
+      case "projects-grid":
+        content = <ProjectsGrid />;
+        break;
+      case "stats-card":
+        content = <StatsCard />;
+        break;
+      default:
+        return null;
+    }
+
+    return (
+      <section key={section} className={containerClasses}>
+        {style.backgroundGlow && (
+          <div
+            className="absolute inset-0 -z-10 blur-[100px] opacity-10 pointer-events-none"
+            style={{ backgroundColor: brand.primaryColor }}
+          />
+        )}
+        <div
+          className={cn(
+            "mx-auto w-full",
+            style.visualWeight === "ghost"
+              ? "max-w-4xl"
+              : style.visualWeight === "full-width"
+              ? "max-w-none"
+              : "max-w-6xl"
+          )}
+        >
+          {content}
+        </div>
+      </section>
+    );
+  };
 
   return (
     <motion.div
@@ -92,126 +323,45 @@ export default function PortfolioPreview({
       className={`w-full max-w-7xl mx-auto px-4 pb-20 vibe-${brand.vibe} typography-${brand.typography} portfolio-container`}
       style={themeStyles}
     >
-      {/* Header Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "circOut" }}
-        className="relative mb-12 py-16 md:py-24 text-center md:text-left overflow-hidden rounded-[2.5rem] bg-white/2 border border-white/10 px-8"
-      >
-        {/* Abstract Background Element */}
-        <div
-          className="absolute -top-24 -right-24 w-96 h-96 rounded-full blur-[120px] opacity-20 transition-colors duration-1000"
-          style={{ backgroundColor: brand.primaryColor }}
-        />
-
-        <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
-          {/* Avatar with dynamic glow */}
-          <div className="relative group">
-            <div
-              className="absolute -inset-2 rounded-full blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-700 animate-pulse"
-              style={{
-                background: `linear-gradient(to right, ${brand.primaryColor}, ${brand.accentColor})`,
-              }}
-            />
-            <img
-              src={user.avatar_url}
-              alt={user.name || user.login}
-              referrerPolicy="no-referrer"
-              className="relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/10 object-cover bg-white/5 shadow-2xl"
-            />
+      {/* AI Rationale - Proof of bespoke architecture */}
+      {brand.designRationale && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12 flex justify-center"
+        >
+          <div className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-[11px] uppercase tracking-[0.2em] text-white/40 backdrop-blur-md shadow-2xl">
+            <span className="text-(--primary) font-bold mr-3">
+              Architecture:
+            </span>
+            {brand.designRationale}
           </div>
-
-          <div className="flex-1 space-y-4">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-white mb-2">
-                {user.name || user.login}
-              </h1>
-              <p
-                className="text-xl md:text-2xl font-medium tracking-tight"
-                style={{ color: brand.primaryColor }}
-              >
-                @{user.login}
-              </p>
-            </motion.div>
-
-            {user.bio && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-white/60 text-lg md:text-xl max-w-3xl leading-relaxed"
-              >
-                {user.bio}
-              </motion.p>
-            )}
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-wrap justify-center md:justify-start gap-4 text-sm font-medium"
-            >
-              {user.location && (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50">
-                  <MapPin className="w-4 h-4" />
-                  {user.location}
-                </div>
-              )}
-              {user.company && (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50">
-                  <Building2 className="w-4 h-4" />
-                  {user.company}
-                </div>
-              )}
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50">
-                <Users className="w-4 h-4" />
-                {user.followers.toLocaleString()} Collectors
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
-
+        </motion.div>
+      )}
       {/* AI Status */}
       {isGeneratingAI && (
         <div className="flex justify-center mb-12">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-(--primary)/10 border border-(--primary)/20"
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10"
           >
-            <Sparkles className="w-5 h-5 animate-spin-slow text-(--primary)" />
-            <span className="text-(--primary) font-semibold tracking-wide uppercase text-xs">
+            <Sparkles
+              className="w-5 h-5 animate-spin-slow"
+              style={{ color: brand.primaryColor }}
+            />
+            <span
+              className="font-semibold tracking-wide uppercase text-xs"
+              style={{ color: brand.primaryColor }}
+            >
               AI Architecting Experience...
             </span>
           </motion.div>
         </div>
       )}
 
-      {/* Content Grid/Layout */}
-      <div className={layoutClass}>
-        {repos.map((repo, index) => (
-          <div
-            key={repo.id}
-            className={
-              brand.layoutPattern === "staggered-masonry"
-                ? "mb-4 break-inside-avoid"
-                : ""
-            }
-          >
-            <BentoCard
-              repo={repo}
-              index={index}
-              size={isBento ? getBentoSize(index, repos.length) : "small"}
-            />
-          </div>
-        ))}
-      </div>
+      {/* Dynamic Sections */}
+      {brand.layoutSections?.map(renderSection) || <HeroMain />}
 
       {/* Footer / Contact */}
       {user.blog && (

@@ -39,27 +39,51 @@ export interface GitHubRepo {
   default_branch: string;
 }
 
+export interface SectionStyle {
+  spacing: "compact" | "normal" | "spacious";
+  alignment: "left" | "center" | "right";
+  visualWeight: "ghost" | "card" | "full-width";
+  customClasses?: string;
+  backgroundGlow?: boolean;
+}
+
+export interface DesignTokens {
+  borderRadius: "none" | "sm" | "md" | "lg" | "full";
+  glassOpacity: number; // 0 to 1
+  borderWidth: number; // 0 to 4
+  shadowIntensity: "none" | "soft" | "bold" | "glow";
+  animationStyle: "fade" | "slide" | "spring" | "glitch";
+}
+
 export interface BrandIdentity {
   primaryColor: string;
   accentColor: string;
   backgroundColor: string;
+  secondaryColor?: string;
+  designRationale?: string; // AI's explanation for the design choices
   typography:
     | "modern-sans"
     | "sophisticated-serif"
     | "sleek-mono"
-    | "experimental-display";
+    | "experimental-display"
+    | "brutalist-bold";
   vibe:
     | "neon-cyber"
     | "glassmorphism"
     | "hyper-minimal"
     | "organic-fluid"
     | "industrial-brutalist"
-    | "futuristic-luxury";
+    | "futuristic-luxury"
+    | "retro-future";
   layoutPattern:
     | "bento-grid"
     | "staggered-masonry"
     | "minimalist-split"
-    | "magazine-editorial";
+    | "magazine-editorial"
+    | "one-page-scroll";
+  layoutSections: string[];
+  sectionStyles?: Record<string, SectionStyle>; // Per-section overrides
+  designTokens: DesignTokens;
   fontFamily: string;
   themePreference: "dark" | "light" | "system";
 }

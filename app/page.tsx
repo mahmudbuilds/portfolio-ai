@@ -105,11 +105,41 @@ export default function Home() {
         finalBrand = {
           primaryColor: "#8b5cf6",
           accentColor: "#6366f1",
+          secondaryColor: "#4f46e5",
           backgroundColor: "#050505",
-          typography: "modern",
-          vibe: "glass",
-          layoutPattern: "bento",
+          typography: "modern-sans",
+          vibe: "glassmorphism",
+          layoutPattern: "bento-grid",
           fontFamily: "Inter",
+          themePreference: "dark",
+          layoutSections: [
+            "hero-main",
+            "projects-bento",
+            "stats-card",
+            "footer-classic",
+          ],
+          designRationale:
+            "A clean, modern professional developer layout with glassmorphism accents.",
+          designTokens: {
+            borderRadius: "lg",
+            glassOpacity: 0.1,
+            borderWidth: 1,
+            shadowIntensity: "soft",
+            animationStyle: "spring",
+          },
+          sectionStyles: {
+            "hero-main": {
+              spacing: "spacious",
+              alignment: "center",
+              visualWeight: "card",
+              backgroundGlow: true,
+            },
+            "projects-bento": {
+              spacing: "normal",
+              alignment: "center",
+              visualWeight: "full-width",
+            },
+          },
         };
       }
 

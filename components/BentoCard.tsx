@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Star, GitFork, ExternalLink, Code2 } from "lucide-react";
-import { EnhancedRepo } from "@/lib/types";
+import { EnhancedRepo, BrandIdentity } from "@/lib/types";
 import {
   Card,
   CardContent,
@@ -16,6 +16,7 @@ interface BentoCardProps {
   repo: EnhancedRepo;
   index: number;
   size?: "small" | "medium" | "large";
+  brand: BrandIdentity;
 }
 
 const sizeClasses = {
@@ -44,10 +45,18 @@ export default function BentoCard({
   repo,
   index,
   size = "small",
+  brand,
 }: BentoCardProps) {
   const languageColor = repo.language
-    ? languageColors[repo.language] || languageColors.default
-    : languageColors.default;
+    ? languageColors[repo.language] || brand.primaryColor
+    : brand.primaryColor;
+
+  const glassStyle = {
+    backgroundColor: `rgba(255, 255, 255, ${brand.designTokens.glassOpacity})`,
+    backdropFilter: `blur(${brand.designTokens.glassOpacity * 100}px)`,
+    borderRadius: "var(--radius)",
+    borderWidth: "var(--border-width)",
+  };
 
   return (
     <motion.div
@@ -57,12 +66,16 @@ export default function BentoCard({
       transition={{
         delay: index * 0.08,
         duration: 0.5,
-        type: "spring",
+        type:
+          brand.designTokens.animationStyle === "spring" ? "spring" : "tween",
         stiffness: 100,
         damping: 15,
       }}
     >
-      <Card className="group relative h-full flex flex-col overflow-hidden bg-white/3 backdrop-blur-3xl border-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-2xl hover:shadow-[var(--primary)]/10">
+      <Card
+        style={glassStyle}
+        className="group relative h-full flex flex-col overflow-hidden border-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-2xl"
+      >
         <a
           href={repo.html_url}
           target="_blank"
