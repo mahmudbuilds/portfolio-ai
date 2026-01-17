@@ -84,7 +84,7 @@ export default function PortfolioPreview({
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "circOut" }}
-      className="relative mb-12 py-16 md:py-24 text-center overflow-hidden rounded-(--radius) bg-foreground/[0.03] border border-border px-8 shadow-[var(--card-shadow)]"
+      className="relative mb-12 py-16 md:py-24 text-center overflow-hidden rounded-(--radius) bg-foreground/[0.05] dark:bg-foreground/[0.03] border border-border px-8 shadow-[var(--card-shadow)]"
       style={{
         backdropFilter: `blur(${brand.designTokens.glassOpacity * 100}px)`,
       }}
@@ -105,7 +105,7 @@ export default function PortfolioPreview({
             src={user.avatar_url}
             alt={user.name || user.login}
             referrerPolicy="no-referrer"
-            className="relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full border-(--border-width) border-foreground/10 object-cover bg-foreground/5 shadow-2xl"
+            className="relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full border-(--border-width) border-foreground/20 dark:border-foreground/10 object-cover bg-foreground/10 dark:bg-foreground/5 shadow-2xl"
           />
         </div>
         <div className="space-y-4 max-w-3xl">
@@ -113,18 +113,18 @@ export default function PortfolioPreview({
             {user.name || user.login}
           </h1>
           {user.bio && (
-            <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
+            <p className="text-foreground/85 dark:text-muted-foreground text-lg md:text-xl leading-relaxed">
               {user.bio}
             </p>
           )}
           <div className="flex flex-wrap justify-center gap-4 text-sm font-medium">
             {user.location && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/50">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/10 dark:bg-foreground/5 border border-foreground/30 dark:border-foreground/10 text-foreground/80 dark:text-foreground/50">
                 <MapPin className="w-4 h-4" />
                 {user.location}
               </div>
             )}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/50">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/10 dark:bg-foreground/5 border border-foreground/30 dark:border-foreground/10 text-foreground/80 dark:text-foreground/50">
               <Users className="w-4 h-4" />
               {user.followers.toLocaleString()} Followers
             </div>
@@ -144,7 +144,9 @@ export default function PortfolioPreview({
         <h1 className="text-5xl md:text-8xl font-black tracking-tight text-foreground leading-[0.9]">
           {user.name || user.login}
         </h1>
-        <p className="text-xl text-foreground/50 max-w-lg">{user.bio}</p>
+        <p className="text-xl text-foreground/85 dark:text-foreground/50 max-w-lg">
+          {user.bio}
+        </p>
         <div className="flex gap-4">
           <div
             className="h-1 w-20 rounded-full"
@@ -223,13 +225,13 @@ export default function PortfolioPreview({
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ delay: i * 0.1 }}
-          className="p-6 rounded-(--radius) bg-foreground/[0.03] border border-border flex flex-col items-center justify-center text-center transition-colors shadow-[var(--card-shadow)]"
+          className="p-6 rounded-(--radius) bg-foreground/[0.05] dark:bg-foreground/[0.03] border border-border flex flex-col items-center justify-center text-center transition-colors shadow-[var(--card-shadow)]"
         >
-          <stat.icon className="w-5 h-5 mb-2 text-foreground/30" />
+          <stat.icon className="w-5 h-5 mb-2 text-foreground/50 dark:text-foreground/30" />
           <span className="text-3xl font-bold text-foreground">
             {stat.value.toLocaleString()}
           </span>
-          <span className="text-xs uppercase tracking-widest text-foreground/40 mt-1">
+          <span className="text-xs uppercase tracking-widest text-foreground/60 dark:text-foreground/40 mt-1">
             {stat.label}
           </span>
         </motion.div>
@@ -319,7 +321,7 @@ export default function PortfolioPreview({
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 flex justify-center"
         >
-          <div className="px-6 py-2 rounded-full bg-foreground/[0.03] border border-foreground/10 text-[11px] uppercase tracking-[0.2em] text-foreground/40 backdrop-blur-md shadow-2xl">
+          <div className="px-6 py-2 rounded-full bg-foreground/[0.05] dark:bg-foreground/[0.03] border border-foreground/20 dark:border-foreground/10 text-[11px] uppercase tracking-[0.2em] text-foreground/60 dark:text-foreground/40 backdrop-blur-md shadow-2xl">
             <span className="text-(--primary) font-bold mr-3">
               Architecture:
             </span>

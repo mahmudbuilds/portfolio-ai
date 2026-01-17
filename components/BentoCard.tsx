@@ -77,7 +77,7 @@ export default function BentoCard({
     >
       <Card
         style={glassStyle}
-        className="group relative h-full flex flex-col overflow-hidden border-foreground/[0.15] hover:border-foreground/[0.25] transition-all duration-500"
+        className="group relative h-full flex flex-col overflow-hidden border-foreground/30 dark:border-foreground/[0.15] hover:border-foreground/50 dark:hover:border-foreground/[0.25] transition-all duration-500"
       >
         <a
           href={repo.html_url}
@@ -112,7 +112,7 @@ export default function BentoCard({
                 </Badge>
               )}
             </div>
-            <ExternalLink className="w-4 h-4 text-foreground/30 group-hover:text-[var(--primary)] transition-colors duration-300" />
+            <ExternalLink className="w-4 h-4 text-foreground/50 dark:text-foreground/30 group-hover:text-[var(--primary)] transition-colors duration-300" />
           </div>
           <CardTitle className="text-xl font-bold text-foreground group-hover:text-[var(--primary)] transition-colors duration-300 leading-tight">
             {repo.aiContent?.headline || repo.name}
@@ -120,7 +120,7 @@ export default function BentoCard({
         </CardHeader>
 
         <CardContent className="relative z-10 flex-1">
-          <p className="text-foreground/60 text-sm leading-relaxed line-clamp-3 group-hover:text-foreground/80 transition-colors">
+          <p className="text-foreground/85 dark:text-foreground/60 text-sm leading-relaxed line-clamp-3 group-hover:text-foreground/95 transition-colors">
             {repo.aiContent?.summary ||
               repo.description ||
               "No description available"}
@@ -128,11 +128,11 @@ export default function BentoCard({
         </CardContent>
 
         <CardFooter className="relative z-10 pt-4 border-t border-foreground/5 flex flex-wrap gap-3">
-          <div className="flex items-center gap-1.5 text-foreground/40 text-[12px]">
+          <div className="flex items-center gap-1.5 text-foreground/60 dark:text-foreground/40 text-[12px]">
             <Star className="w-3.5 h-3.5" />
             <span>{repo.stargazers_count.toLocaleString()}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-foreground/40 text-[12px]">
+          <div className="flex items-center gap-1.5 text-foreground/60 dark:text-foreground/40 text-[12px]">
             <GitFork className="w-3.5 h-3.5" />
             <span>{repo.forks_count.toLocaleString()}</span>
           </div>

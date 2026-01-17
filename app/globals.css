@@ -4,41 +4,43 @@
    THEME TOKENS
    ============================ */
 :root {
-  --background: #fbfbfb;
-  --foreground: #0a0a0a;
+  --background: 220 33% 98%;
+  --foreground: 224 71% 4%;
   
-  --primary: 263.4 70% 50.4%;
+  --primary: 262 83% 58%;
   --primary-foreground: 210 20% 98%;
   
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 3.9%;
+  --card-foreground: 224 71% 4%;
   
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 3.9%;
+  --popover-foreground: 224 71% 4%;
   
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 9%;
+  --secondary: 220 20% 92%;
+  --secondary-foreground: 224 71% 4%;
   
-  --muted: 0 0% 92%;
-  --muted-foreground: 0 0% 35%;
+  --muted: 220 20% 94%;
+  --muted-foreground: 220 20% 30%;
   
-  --accent: 0 0% 96.1%;
-  --accent-foreground: 0 0% 9%;
+  --accent: 262 83% 95%;
+  --accent-foreground: 262 83% 58%;
   
   --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive-foreground: 210 20% 98%;
   
-  --border: 0 0% 85%;
-  --input: 0 0% 85%;
-  --ring: 263.4 70% 50.4%;
+  --border: 220 20% 85%;
+  --input: 220 20% 85%;
+  --ring: 262 83% 58%;
   
-  --radius: 0.75rem;
-  --card-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+  --radius: 1rem;
+  --card-shadow: 0 20px 40px -15px rgba(0,0,0,0.08);
+
+  --gradient-start: #4f46e5;
 }
 
 .dark {
-  --background: #050505;
-  --foreground: #ededed;
+  --background: 0 0% 2%;
+  --foreground: 0 0% 93%;
   
   --card: 0 0% 3.9%;
   --card-foreground: 0 0% 98%;
@@ -61,6 +63,8 @@
   --border: 0 0% 14.9%;
   --input: 0 0% 14.9%;
   --card-shadow: 0 20px 50px -12px rgba(0,0,0,0.5);
+
+  --gradient-start: #ffffff;
 }
 
 ::selection {
@@ -69,8 +73,8 @@
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
   --color-card: hsl(var(--card));
@@ -150,10 +154,20 @@ html {
    GRADIENT TEXT
    ============================ */
 .gradient-text {
-  background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 50%, #8b5cf6 100%);
+  background: linear-gradient(
+    135deg, 
+    var(--gradient-start) 0%, 
+    #8b5cf6 30%, 
+    #ec4899 60%, 
+    #f43f5e 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.dark .gradient-text {
+  /* background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 50%, #8b5cf6 100%); */
 }
 
 /* ============================

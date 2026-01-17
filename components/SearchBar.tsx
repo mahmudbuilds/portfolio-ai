@@ -36,8 +36,8 @@ export default function SearchBar({
         <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 group-focus-within:opacity-60 transition-opacity duration-500" />
 
         {/* Main input container */}
-        <div className="relative flex items-center bg-background/80 backdrop-blur-xl border border-foreground/10 group-focus-within:border-foreground/30 rounded-2xl overflow-hidden transition-colors duration-300">
-          <div className="pl-3 sm:pl-5 text-foreground/40">
+        <div className="relative flex items-center bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-primary/20 dark:border-white/10 group-focus-within:border-primary/40 dark:group-focus-within:border-white/20 rounded-2xl overflow-hidden transition-all duration-500 shadow-xl shadow-primary/5 dark:shadow-none">
+          <div className="pl-3 sm:pl-5 text-foreground/60 dark:text-foreground/40">
             {isLoading ? (
               <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
             ) : (
@@ -51,13 +51,13 @@ export default function SearchBar({
             onChange={(e) => setUsername(e.target.value)}
             placeholder="GitHub username..."
             disabled={isLoading}
-            className="flex-1 bg-transparent px-3 sm:px-4 py-4 sm:py-5 text-base sm:text-lg text-foreground placeholder-foreground/30 !outline-none focus:ring-0 disabled:opacity-50 min-w-0"
+            className="flex-1 bg-transparent px-3 sm:px-4 py-4 sm:py-5 text-base sm:text-lg text-foreground placeholder-muted-foreground/60 font-medium !outline-none focus:ring-0 disabled:opacity-50 min-w-0"
           />
 
           <button
             type="submit"
             disabled={isLoading || !username.trim()}
-            className="mr-1.5 sm:mr-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm sm:text-base font-medium rounded-xl hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            className="mr-1.5 sm:mr-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-primary via-violet-600 to-indigo-600 dark:from-primary dark:to-indigo-500 text-white text-sm sm:text-base font-bold rounded-xl hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shadow-lg shadow-primary/25"
           >
             {isLoading ? (
               <span className="hidden sm:inline">Searching...</span>

@@ -218,10 +218,10 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 mb-8"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-accent dark:bg-violet-500/20 border border-primary/20 dark:border-violet-500/20 mb-8 shadow-sm"
               >
-                <Sparkles className="w-4 h-4 text-violet-400" />
-                <span className="text-sm text-violet-300">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-sm font-bold text-primary">
                   Powered by Gemini 2.0 Flash
                 </span>
               </motion.div>
@@ -237,7 +237,9 @@ export default function Home() {
                 <br />
                 <span className="text-foreground">Your GitHub</span>
                 <br />
-                <span className="text-foreground/60">Into a Portfolio</span>
+                <span className="text-foreground/80 dark:text-foreground/60 transition-colors duration-500">
+                  Into a Portfolio 
+                </span>
               </motion.h1>
 
               {/* Subheadline */}
@@ -245,11 +247,11 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-base sm:text-lg md:text-xl text-foreground/50 text-center max-w-2xl mb-8 md:mb-12 font-light px-4"
+                className="text-base sm:text-lg md:text-xl text-muted-foreground text-center max-w-2xl mb-8 md:mb-12 font-medium px-4 transition-colors duration-500"
               >
                 Unique brand identities generated for every developer.
                 <br className="hidden md:block" />
-                Export as a production-ready Next.js 16 app.
+                Export as a production-ready Next.js 16 web app.
               </motion.p>
 
               {/* Search Bar */}
@@ -277,7 +279,7 @@ export default function Home() {
                     setRepos([]);
                     setBrand(null);
                   }}
-                  className="w-full sm:w-auto group py-2 px-6 rounded-xl border border-white/5 hover:border-white/20 transition-all flex items-center justify-center gap-2 text-white/40 hover:text-white"
+                  className="w-full sm:w-auto group py-2 px-6 rounded-xl border border-foreground/5 hover:border-foreground/20 transition-all flex items-center justify-center gap-2 text-foreground/40 hover:text-foreground"
                 >
                   <span className="group-hover:-translate-x-1 transition-transform">
                     ←

@@ -4,7 +4,13 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useRef, Suspense, useEffect } from "react";
 import * as THREE from "three";
 
-function TorusKnotMesh({ color = "#6366f1" }: { color?: string }) {
+function TorusKnotMesh({
+  color = "#6366f1",
+  opacity = 0.15,
+}: {
+  color?: string;
+  opacity?: number;
+}) {
   const meshRef = useRef<THREE.Mesh>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const { viewport } = useThree();
@@ -41,12 +47,23 @@ function TorusKnotMesh({ color = "#6366f1" }: { color?: string }) {
   return (
     <mesh ref={meshRef} scale={viewport.width > 10 ? 2.5 : 1.8}>
       <torusKnotGeometry args={[1, 0.3, 128, 16, 2, 3]} />
-      <meshBasicMaterial color={color} wireframe transparent opacity={0.15} />
+      <meshBasicMaterial
+        color={color}
+        wireframe
+        transparent
+        opacity={opacity}
+      />
     </mesh>
   );
 }
 
-function GlowEffect({ color = "#8b5cf6" }: { color?: string }) {
+function GlowEffect({
+  color = "#8b5cf6",
+  opacity = 0.05,
+}: {
+  color?: string;
+  opacity?: number;
+}) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -63,7 +80,12 @@ function GlowEffect({ color = "#8b5cf6" }: { color?: string }) {
   return (
     <mesh ref={meshRef}>
       <torusKnotGeometry args={[1, 0.3, 64, 8, 2, 3]} />
-      <meshBasicMaterial color={color} wireframe transparent opacity={0.05} />
+      <meshBasicMaterial
+        color={color}
+        wireframe
+        transparent
+        opacity={opacity}
+      />
     </mesh>
   );
 }
@@ -77,15 +99,15 @@ function Scene({
   primaryColor?: string;
   accentColor?: string;
 }) {
-  const { theme } = useTheme();
-  const isLight = theme === "light";
+  const { resolvedTheme } = useTheme();
+  const isLight = resolvedTheme === "light";
 
   return (
     <>
       <ambientLight intensity={isLight ? 1.5 : 0.5} />
       <pointLight position={[10, 10, 10]} intensity={isLight ? 2 : 1} />
-      <TorusKnotMesh color={primaryColor} />
-      <GlowEffect color={accentColor} />
+      <TorusKnotMesh color={primaryColor} opacity={isLight ? 0.12 : 0.15} />
+      <GlowEffect color={accentColor} opacity={isLight ? 0.04 : 0.05} />
     </>
   );
 }
@@ -97,8 +119,8 @@ interface Background3DProps {
 }
 
 export default function Background3D({
-  primaryColor = "#6366f1",
-  accentColor = "#8b5cf6",
+  primaryColor = "#4f46e5",
+  accentColor = "#7c3aed",
 }: Background3DProps) {
   return (
     <div className="fixed inset-0 -z-10 pointer-events-none transition-colors duration-1000 bg-background">
